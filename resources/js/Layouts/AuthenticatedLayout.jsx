@@ -12,8 +12,8 @@ export default function AuthenticatedLayout({ header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
-    const menu = (role) => {
-        if (role === "admin"){
+    const menu = () => {
+        if (user.role === "admin"){
             return [
                 {
                     name: "Dashboard",

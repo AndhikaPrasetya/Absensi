@@ -7,17 +7,17 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Transition } from "@headlessui/react";
 import { Link, useForm, usePage } from "@inertiajs/react";
-import { useRef } from "react";
+import { useRef } from "react"; 
 import SelectBox from "@/Components/SelectBox";
 
-export default function UserCreate({ auth }) {
+export default function EditUser({ user, auth }) {
     const passwordInput = useRef();
 
-    const { data, setData, post, errors, processing, recentlySuccessful } =
+    const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
-            name: "",
-            email: "",
-            role:"",
+            name: user.name,
+            email: user.email,
+            role:user.role,
             password: "",
             password_confirmation: "",
         });
@@ -25,10 +25,10 @@ export default function UserCreate({ auth }) {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route("users.store"), {
+        patch(route("users.update", user.id), {
             preserveScroll: true,
             onSuccess: () => {
-                alert("success");
+                alert("user updated");
             },
             onError: () => {
                 console.log("error");
@@ -121,7 +121,7 @@ export default function UserCreate({ auth }) {
                                                 setData("role", e.target.value)
                                             }
                                             id="role"
-                                            currentValue="user"
+                                            currentValue={data.role}
                                             options={[
                                                 {
                                                     label: "Admin",
