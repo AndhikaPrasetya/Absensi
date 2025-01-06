@@ -2,6 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import Pagination from "@/Components/Pagination";
 import { Link } from "@inertiajs/react";
+import SubmitAttendance from "@/Components/Attendance/Submit";
 
 export default function UserIndex({ auth, user }) {
     return (

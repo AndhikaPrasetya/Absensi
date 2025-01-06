@@ -14,25 +14,66 @@ import roles from "@/data/roles.json";
 export default function SubmitAttendance({ auth }) {
     const [statusAttendance, setStatusAttendance] = useState(false);
 
-    const { data, setData, post, errors, processing, recentlySuccessful } =
-        useForm({
-           status: "attend",
-           description:""
-        });
+    const { data, setData, transform, post, errors, processing } = useForm({
+        status: "attend",
+        description: "",
+        latitude: "",
+        longitude: "",
+        prepareData: {}
+    });
 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route("users.store"), {
-            preserveScroll: true,
-            onSuccess: () => {
-                alert("success");
-            },
-            onError: () => {
-                console.log("error");
-            },
-        });
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                console.log("latitude is : ", position.coords.latitude);
+                console.log("longitude is : ", position.coords.longitude);
+                
+                let objLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+
+                setData("prepareData", objLocation);
+                
+            }, 
+            function (error) {
+                alert("tidak mendapatkan lokasi");
+            }
+        );
+
+        // post(route("attendance.submit"), {
+        //     preserveScroll: true,
+        //     onSuccess: () => {
+        //         alert("absensi berhasil disubmit");
+        //     },
+        //     onError: (errors) => {
+        //         console.log(errors);
+        //     },
+        // });
     };
+
+    useEffect(()=>{
+        if(data.prepareData.hasOwnProperty("latitude") && data.prepareData.hasOwnProperty("longitude")){
+
+            transform ((data)=>({
+                ...data.prepareData,
+                status:data.status,
+                description:data.description
+            }))
+
+            post(route("attendance.submit"), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    alert("absensi berhasil disubmit");
+                },
+                onError: (errors) => {
+                    console.log(errors);
+                },
+            });
+        }
+    },[data.prepareData])
 
     useEffect(() => {
         if (data.status !== "attend") {
