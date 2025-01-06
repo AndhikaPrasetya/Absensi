@@ -9,6 +9,7 @@ import { Transition } from "@headlessui/react";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import { useRef } from "react";
 import SelectBox from "@/Components/SelectBox";
+import roles from "@/data/roles.json"
 
 export default function UserCreate({ auth }) {
     const passwordInput = useRef();
@@ -20,6 +21,7 @@ export default function UserCreate({ auth }) {
             role:"",
             password: "",
             password_confirmation: "",
+            role:"user"
         });
 
     const submit = (e) => {
@@ -122,16 +124,7 @@ export default function UserCreate({ auth }) {
                                             }
                                             id="role"
                                             currentValue="user"
-                                            options={[
-                                                {
-                                                    label: "Admin",
-                                                    value: "admin",
-                                                },
-                                                {
-                                                    label: "User",
-                                                    value: "user",
-                                                },
-                                            ]}
+                                            options={roles}
                                         />
 
                                         <InputError

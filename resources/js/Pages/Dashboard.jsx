@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import SubmitAttendance from '@/Components/Attendance/Submit';
 
 export default function Dashboard({auth}) {
     return (
@@ -14,11 +15,19 @@ export default function Dashboard({auth}) {
             <Head title="Dashboard" />
 
             <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900">
                             You're logged in!
                         </div>
+                    </div>
+                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                        <section className='max-w-xl'>
+                        <div className="p-6 text-gray-900">
+                           <SubmitAttendance/>
+                        </div>
+
+                        </section>
                     </div>
                 </div>
             </div>
