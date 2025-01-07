@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class AttendanceController extends Controller
 {
@@ -15,18 +16,20 @@ class AttendanceController extends Controller
             "description" => 'required_if:status,sick,leave,permit,business_trip,remote',
             'latitude' => 'required',
             'longitude' => 'required',
+            'address' =>'required'
         ]);
 
-      $attendance = Attendance::create([
+      Attendance::create([
             'user_id' => auth()->id(),
             'status' => $request->status,
             'description' => $request->description,
             'latitude' => $request->latitude,
-            'longitude' => $request->longitude
+            'longitude' => $request->longitude,
+            'address' =>$request->address
         ]);
 
         // dd($attendance);
 
-        // return response()->json($attendance, 201);
+        return Redirect::route("users");
     }
 }

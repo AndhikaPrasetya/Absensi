@@ -9,9 +9,9 @@ import { Transition } from "@headlessui/react";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import { useRef } from "react";
 import SelectBox from "@/Components/SelectBox";
-import roles from "@/data/roles.json";
+import { Loader } from "@googlemaps/js-api-loader";
 
-export default function SubmitAttendance({ auth }) {
+export default function SubmitAttendance() {
     const [statusAttendance, setStatusAttendance] = useState(false);
 
     const { data, setData, transform, post, errors, processing } = useForm({
@@ -19,49 +19,54 @@ export default function SubmitAttendance({ auth }) {
         description: "",
         latitude: "",
         longitude: "",
-        prepareData: {}
+        address: "",
+        prepareData: {},
     });
 
-    const submit = (e) => {
+    const getLatLing = (e) => {
         e.preventDefault();
-
         navigator.geolocation.getCurrentPosition(
             function (position) {
-                console.log("latitude is : ", position.coords.latitude);
-                console.log("longitude is : ", position.coords.longitude);
-                
-                let objLocation = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-
-                setData("prepareData", objLocation);
-                
-            }, 
+                createGeocoder(position.coords);
+            },
             function (error) {
                 alert("tidak mendapatkan lokasi");
             }
         );
-
-        // post(route("attendance.submit"), {
-        //     preserveScroll: true,
-        //     onSuccess: () => {
-        //         alert("absensi berhasil disubmit");
-        //     },
-        //     onError: (errors) => {
-        //         console.log(errors);
-        //     },
-        // });
     };
 
-    useEffect(()=>{
-        if(data.prepareData.hasOwnProperty("latitude") && data.prepareData.hasOwnProperty("longitude")){
+    // mencari titik daerah melalui lat ling
+    function createGeocoder(coordinates) {
+        axios
+            .get(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coordinates.latitude}&lon=${coordinates.longitude}`
+            )
+            .then((response) => {
+                if (!response) {
+                    alert("tidak mendapatkan lokasi");
+                }
+                console.log("Address:", response);
+                //set prepareData
+                let objLocation = {
+                    latitude: coordinates.latitude,
+                    longitude: coordinates.longitude,
+                    address: response.data.display_name,
+                };
+                setData("prepareData", objLocation);
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
+    }
 
-            transform ((data)=>({
+//sebelum submit transform data
+    useEffect(() => {
+        if (data.prepareData.hasOwnProperty("address")) {
+            transform((data) => ({
                 ...data.prepareData,
-                status:data.status,
-                description:data.description
-            }))
+                status: data.status,
+                description: data.description,
+            }));
 
             post(route("attendance.submit"), {
                 preserveScroll: true,
@@ -73,7 +78,7 @@ export default function SubmitAttendance({ auth }) {
                 },
             });
         }
-    },[data.prepareData])
+    }, [data.prepareData]);
 
     useEffect(() => {
         if (data.status !== "attend") {
@@ -84,7 +89,7 @@ export default function SubmitAttendance({ auth }) {
     }, [data.status]);
 
     return (
-        <form onSubmit={submit} className="mt-6 space-y-6">
+        <form onSubmit={getLatLing} className="mt-6 space-y-6">
             <div>
                 <InputLabel htmlFor="info" value="Silahkan lakukan absensi" />
 
@@ -124,19 +129,6 @@ export default function SubmitAttendance({ auth }) {
 
             <div className="flex items-center justify-between gap-4">
                 <PrimaryButton disabled={processing}>Absensi</PrimaryButton>
-
-                {/* 
-                                        <Transition
-                                            show={recentlySuccessful}
-                                            enter="transition ease-in-out"
-                                            enterFrom="opacity-0"
-                                            leave="transition ease-in-out"
-                                            leaveTo="opacity-0"
-                                        >
-                                            <p className="text-sm text-gray-600">
-                                                Saved.
-                                            </p>
-                                        </Transition> */}
             </div>
         </form>
     );
