@@ -12,6 +12,10 @@ class Attendance extends Model
     use HasUuids;
     use HasFactory;
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     protected $fillable = [
     'user_id',
     'latitude',

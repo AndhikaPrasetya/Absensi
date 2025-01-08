@@ -1,11 +1,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import SubmitAttendance from '@/Components/Attendance/Submit';
+import Index from '@/Components/Attendance/Index';
 
-export default function Dashboard({auth}) {
+export default function Dashboard({auth, submitted}) {
     return (
         <AuthenticatedLayout
-        // user= {auth.user}
+        user= {auth.user}
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     Dashboard
@@ -24,7 +24,7 @@ export default function Dashboard({auth}) {
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <section className='max-w-xl'>
                         <div className="p-6 text-gray-900">
-                           <SubmitAttendance/>
+                           <Index/>
                         </div>
 
                         </section>

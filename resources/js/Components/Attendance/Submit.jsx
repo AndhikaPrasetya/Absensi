@@ -96,10 +96,10 @@ export default function SubmitAttendance() {
                 <SelectBox
                     onChange={(e) => setData("status", e.target.value)}
                     options={[
-                        { value: "attend", label: "attend" },
-                        { value: "sick", label: "sick" },
+                        { value: "attend", label: "Hadir" },
+                        { value: "sick", label: "Sakit" },
                         { value: "leave", label: "leave" },
-                        { value: "permit", label: "permit" },
+                        { value: "permit", label: "Izin" },
                         { value: "business_trip", label: "Perjalanan Dinas" },
                         { value: "remote", label: "WFA" },
                     ]}
